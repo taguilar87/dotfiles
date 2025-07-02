@@ -1,0 +1,111 @@
+[include]
+  path = ~/.gitconfig.local
+
+[alias] ; Note: recursive aliases need to go through a !sh
+  st         = status
+  co         = checkout
+  br         = branch
+  sta        = stash
+
+  ; Comparing
+  di         = diff
+  ds         = diff --staged
+  dc         = diff --cached
+  files      = show --stat
+  unmerged   = "!f() { git log ${@:1} ^${@:2} --no-merges; }; f"
+  unpushed   = !git unmerged `git branchname` `git upstream`
+
+  ; Staging
+  unstage    = reset HEAD
+  ap         = add -p
+  aa         = add -A
+  an         = add -AN
+  rp         = reset -p
+  cop        = checkout -p
+  com        = checkout main
+  cob        = checkout -b
+
+  ; Committing
+  ci         = commit
+  amend      = commit --amend -CHEAD --reset-author
+  wip        = !sh -c 'git commit --message \"WIP - $1\"' -
+  fixup      = commit --fixup
+  squash     = commit --squash
+
+  ; Branching
+  pr         = pull --rebase
+  mb         = merge --no-ff
+  branchname = rev-parse --abbrev-ref HEAD
+  upstream   = rev-parse --abbrev-ref main@{upstream}
+  pruneall   = !git remote prune origin && git branch -l | grep -v main | cut -d' ' -f3 | xargs -L1 git branch -d
+
+  ; Rebasing
+  rem         = rebase origin/master
+  rec         = rebase --continue
+  rea         = rebase --abort
+
+  ; Commit history
+  show       = show --pretty medium
+  l          = !git lg
+  lga        = !git lg --all
+  blog       = !git lg `git upstream`... --left-right
+  flog       = !git llg
+  llog       = !git llg
+  llga       = !git llg --all
+  wip        = !sh -c 'git commit --message \"WIP - $1\"' -
+  lg         = !git log --graph --date=relative --pretty=format:\"\
+%C(red)%h%Creset \
+%C(blue)[%cd] \
+%C(white)%s%Creset\
+%Creset%C(green)%d%Creset\
+\"
+
+  llg        = !git log --graph --stat --stat-width=80 --stat-count=16 --pretty=format:\"\
+--------------------------------------------------------------------------------%n \
+%C(blue)[%cd]%Creset \
+%C(black)%cn%Creset\
+%C(red)%>|(80)%H%Creset%n\
+%C(green)%>|(80)%d%Creset%n\
+ %s%n\
+%n%b%n\"
+
+  trust = "!mkdir -p .git/safe"
+
+  integrate  = !git pull --rebase origin $(git rev-parse --abbrev-ref HEAD) && git pull --rebase origin master
+
+[apply]
+  whitespace          = nowarn
+[branch]
+  autosetupmerge      = true
+[color]
+  branch              = auto
+  diff                = auto
+  interactive         = auto
+  status              = auto
+  ui                  = auto
+[core]
+  editor              = vim
+  pager               = /usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight | less
+  precomposeunicode   = false
+[diff]
+  context             = 2
+  tool                = vimdiff
+  compactionHeuristic = true
+[difftool]
+  prompt              = false
+[format]
+  pretty              = %Cred%h%Creset %C(black bold)|%Creset %<(56,trunc)%s %C(blue)[%cd]%C(green)%d%Creset
+[interactive]
+  diffFilter          =/usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight
+[log]
+  date                = short
+[mergetool]
+  keepBackup          = false
+[push]
+  default             = current
+[rebase]
+  autosquash          = true
+[rerere]
+  enabled             = false
+[credential]
+	helper = cache
